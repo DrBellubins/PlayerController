@@ -1,0 +1,72 @@
+[gd_scene load_steps=11 format=3 uid="uid://cf1bti215nrhb"]
+
+[ext_resource type="PackedScene" uid="uid://geh7augvu5ky" path="res://Prefabs/Player.tscn" id="1_a7hrv"]
+[ext_resource type="Script" path="res://Scripts/Hotkeys.cs" id="1_ux7d8"]
+[ext_resource type="Script" path="res://Scripts/DebugTextDraw.cs" id="1_xf8r6"]
+[ext_resource type="Material" uid="uid://krrxg565dk6p" path="res://Materials/Grid.tres" id="2_w6rnr"]
+[ext_resource type="PackedScene" uid="uid://cld7qpx1tehom" path="res://Prefabs/Box.tscn" id="3_xntlb"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_nr2ov"]
+size = Vector3(20, 0.1, 20)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_buya7"]
+size = Vector3(20, 0.1, 20)
+
+[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_oevmw"]
+
+[sub_resource type="Sky" id="Sky_xp1ty"]
+sky_material = SubResource("PhysicalSkyMaterial_oevmw")
+
+[sub_resource type="Environment" id="Environment_wlcnk"]
+background_mode = 2
+background_energy_multiplier = 2.0
+sky = SubResource("Sky_xp1ty")
+tonemap_mode = 3
+glow_enabled = true
+
+[node name="DemoScene" type="Node3D"]
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DebugText" type="Label" parent="UI"]
+layout_mode = 1
+offset_right = 40.0
+offset_bottom = 23.0
+text = "Test"
+script = ExtResource("1_xf8r6")
+
+[node name="Player" parent="." instance=ExtResource("1_a7hrv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.15, 0)
+JumpImpulse = 50000.0
+
+[node name="Floor" type="MeshInstance3D" parent="."]
+material_override = ExtResource("2_w6rnr")
+mesh = SubResource("BoxMesh_nr2ov")
+
+[node name="Collider" type="StaticBody3D" parent="Floor"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor/Collider"]
+shape = SubResource("BoxShape3D_buya7")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.979897, 0.199505, 0, -0.199505, 0.979897, 0, 0, 0)
+light_color = Color(1, 0.828254, 0.682359, 1)
+light_energy = 2.0
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_wlcnk")
+
+[node name="Box" parent="." instance=ExtResource("3_xntlb")]
+transform = Transform3D(0.829067, 0.55915, 0, -0.333606, 0.494647, -0.802516, -0.448726, 0.665339, 0.596631, 0, 3.922, 2.05946)
+collision_layer = 1
+
+[node name="Hotkeys" type="Node" parent="."]
+process_priority = -999999
+script = ExtResource("1_ux7d8")
