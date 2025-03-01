@@ -10,7 +10,7 @@ axis_lock_angular_y = true
 axis_lock_angular_z = true
 script = ExtResource("1_8iq7x")
 Speed = 8000.0
-JumpImpulse = 500.0
+AirControl = 1.0
 Friction = 0.4
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]

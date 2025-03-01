@@ -104,7 +104,8 @@ public partial class FPSController : RigidBody3D
         // Handle jump
         if (Input.IsActionJustPressed("jump") && isGrounded)
         {
-            ApplyCentralImpulse(new Vector3(0, JumpImpulse, 0));
+            // Apply impulse is borked... so we do this instead
+            LinearVelocity = new Vector3(LinearVelocity.X, LinearVelocity.Y + JumpImpulse, LinearVelocity.Z);
         }
     }
 
@@ -144,11 +145,5 @@ public partial class FPSController : RigidBody3D
         {
             Input.MouseMode = Input.MouseModeEnum.Visible;
         }
-    }
-
-    public override void _IntegrateForces(PhysicsDirectBodyState3D state)
-    {
-        // Ensure gravity is applied (RigidBody3D already has gravity, but we can reinforce it)
-        state.ApplyCentralForce(new Vector3(0, -gravity * Mass, 0));
     }
 }
