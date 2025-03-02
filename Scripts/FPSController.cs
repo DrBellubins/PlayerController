@@ -24,10 +24,14 @@ public partial class FPSController : RigidBody3D
     private Vector2 mouseInput = Vector2.Zero;
     private float horizontalRotation = 0.0f;
     private float verticalRotation = 0.0f;
-    
+    private float currentFriction;
+
+    private bool canWalk = true;
+
     private bool isGrounded = false;
     private bool isRunning = false;
     private bool isCrouched = false;
+    private bool isSliding = false;
 
     public override void _Ready()
     {
@@ -42,6 +46,9 @@ public partial class FPSController : RigidBody3D
 
         // Capture the mouse
         Input.MouseMode = Input.MouseModeEnum.Captured;
+
+        // Set current friction to friction setting at start
+        currentFriction = Friction;
     }
 
     public override void _Input(InputEvent @event)
@@ -64,7 +71,10 @@ public partial class FPSController : RigidBody3D
         // Handle camera rotation
         HandleCameraRotation();
 
-        Debug.Write($"{isGrounded}");
+        Debug.Write($"grounded: {isGrounded}");
+        Debug.Write($"running: {isRunning}");
+        Debug.Write($"crouched: {isCrouched}");
+        Debug.Write($"sliding: {isSliding}");
         Debug.Write($"{direction}");
     }
 
@@ -76,13 +86,16 @@ public partial class FPSController : RigidBody3D
         // Handle movement
         HandleMovement((float)delta);
 
+        // Handle sliding
+        HandleSliding((float)delta);
+
         // Handle crounching
         HandleCrouching((float)delta);
 
         // Apply custom friction (RigidBody3D doesn’t slide naturally like CharacterBody3D)
         Vector3 velocity = LinearVelocity;
-        velocity.X *= Friction;
-        velocity.Z *= Friction;
+        velocity.X *= currentFriction;
+        velocity.Z *= currentFriction;
         LinearVelocity = velocity;
     }
 
@@ -99,17 +112,18 @@ public partial class FPSController : RigidBody3D
         direction.Y = 0f;
         direction = direction.Normalized();
 
+        isRunning = Input.IsActionPressed("run");
+
         // Apply crouch speed modifier when crouching
         float crouchModifier = isCrouched ? CrouchSpeedMult : 1.0f;
 
         // Handle running
-        isRunning = Input.IsActionPressed("run");
-        float runModifier = isRunning ? RunSpeedMult : 1.0f;
+        float runModifier = (isRunning && !isCrouched) ? RunSpeedMult : 1.0f;
 
         // Apply movement force
         float control = isGrounded ? 1.0f : AirControl;
 
-        if (direction != Vector3.Zero)
+        if (direction != Vector3.Zero && canWalk)
         {
             Vector3 force = direction * Speed * runModifier * crouchModifier * control * delta;
             ApplyCentralForce(force);
@@ -119,35 +133,61 @@ public partial class FPSController : RigidBody3D
         if (Input.IsActionJustPressed("jump") && isGrounded)
         {
             // Apply impulse is borked... so we do this instead
-            LinearVelocity = new Vector3(LinearVelocity.X, LinearVelocity.Y + JumpImpulse, LinearVelocity.Z);
+            LinearVelocity += new Vector3(0f, JumpImpulse, 0f);
         }
     }
 
     private void HandleCrouching(float delta)
     {
         // Toggle crouch state
-        if (Input.IsActionJustPressed("crouch") && isGrounded)
+        if (Input.IsActionJustPressed("crouch") && isGrounded && !isSliding)
             isCrouched = true;
 
         if (Input.IsActionJustReleased("crouch"))
-        {
-            ((CapsuleShape3D)collider.Shape).Radius = 0.5f;
             isCrouched = false;
+
+        Crouch(false, delta);
+    }
+
+    private void HandleSliding(float delta)
+    {
+        // Toggle sliding state
+        if (isRunning && Input.IsActionJustPressed("crouch") && isGrounded)
+        {
+            isSliding = true;
+            canWalk = false;
+            currentFriction = 1f;
+            LinearVelocity += new Vector3(LinearVelocity.X, 0f, LinearVelocity.Z);
         }
-        
+
+        if (Input.IsActionJustReleased("crouch"))
+        {
+            isSliding = false;
+            canWalk = true;
+            currentFriction = Friction;
+        }
+
+        Crouch(true, delta);
+    }
+
+    // Crouching code is also used for sliding
+    private void Crouch(bool sliding, float delta)
+    {
+        var check = sliding ? isSliding : isCrouched;
+
         // Smoothly adjust collider height
-        float targetHeight = isCrouched ? CrouchHeight : PlayerHeight;
+        float targetHeight = check ? CrouchHeight : PlayerHeight;
         ((CapsuleShape3D)collider.Shape).Height = Mathf.Lerp(((CapsuleShape3D)collider.Shape).Height, targetHeight, 10f * delta);
 
         // Adjust collision shape position to keep feet grounded
         float heightDifference = (PlayerHeight - ((CapsuleShape3D)collider.Shape).Height) / 2f;
         Vector3 targetPosition = new Vector3(0, heightDifference, 0);
 
-        if (!isCrouched)
+        if (!check)
             Position -= targetPosition;
 
         // Adjust camera position
-        float cameraTargetY = isCrouched ? CrouchHeight : PlayerHeight;
+        float cameraTargetY = check ? CrouchHeight : PlayerHeight;
         Vector3 cameraPos = camera.Position;
         cameraPos.Y = Mathf.Lerp(cameraPos.Y, cameraTargetY, 10f * delta);
         camera.Position = cameraPos;

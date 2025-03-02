@@ -8,11 +8,12 @@
 axis_lock_angular_x = true
 axis_lock_angular_y = true
 axis_lock_angular_z = true
+continuous_cd = true
 script = ExtResource("1_8iq7x")
-Speed = 8000.0
+Speed = 4000.0
 PlayerHeight = 1.0
 AirControl = 1.0
-Friction = 0.4
+Friction = 0.65
 
 [node name="Collider" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_22lva")
