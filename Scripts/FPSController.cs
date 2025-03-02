@@ -80,6 +80,12 @@ public partial class FPSController : RigidBody3D
 
     public override void _PhysicsProcess(double delta)
     {
+        // Apply custom friction (RigidBody3D doesn’t slide naturally like CharacterBody3D)
+        Vector3 velocity = LinearVelocity;
+        velocity.X *= currentFriction;
+        velocity.Z *= currentFriction;
+        LinearVelocity = velocity;
+
         // Handle body yaw rotation
         HandleBodyRotation();
 
@@ -91,12 +97,6 @@ public partial class FPSController : RigidBody3D
 
         // Handle crounching
         HandleCrouching((float)delta);
-
-        // Apply custom friction (RigidBody3D doesn’t slide naturally like CharacterBody3D)
-        Vector3 velocity = LinearVelocity;
-        velocity.X *= currentFriction;
-        velocity.Z *= currentFriction;
-        LinearVelocity = velocity;
     }
 
     private void HandleMovement(float delta)
@@ -131,10 +131,7 @@ public partial class FPSController : RigidBody3D
 
         // Handle jump
         if (Input.IsActionJustPressed("jump") && isGrounded)
-        {
-            // Apply impulse is borked... so we do this instead
-            LinearVelocity += new Vector3(0f, JumpImpulse, 0f);
-        }
+            ApplyCentralImpulse(new Vector3(0f, JumpImpulse, 0f));
     }
 
     private void HandleCrouching(float delta)
