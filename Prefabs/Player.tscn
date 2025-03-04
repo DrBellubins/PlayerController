@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://geh7augvu5ky"]
 
-[ext_resource type="Script" path="res://Scripts/FPSController.cs" id="1_8iq7x"]
+[ext_resource type="Script" uid="uid://db4xqxw6mxga7" path="res://Scripts/FPSController.cs" id="1_8iq7x"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_22lva"]
 

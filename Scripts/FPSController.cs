@@ -167,6 +167,7 @@ public partial class FPSController : RigidBody3D
         Crouch(true, delta);
     }
 
+    // TODO: This is broken in jolt???
     // Crouching code is also used for sliding
     private void Crouch(bool sliding, float delta)
     {
