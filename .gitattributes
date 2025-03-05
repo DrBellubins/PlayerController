@@ -1,3 +1,4 @@
 # Normalize EOL for all files that Git considers text files.
 * text=auto
 * eol=lf
+C:/Users/stink/Documents/GitHub/PlayerController/Textures/halo_planet.exr filter=lfs diff=lfs merge=lfs -text

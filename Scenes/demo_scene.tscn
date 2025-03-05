@@ -1,28 +1,54 @@
-[gd_scene load_steps=11 format=3 uid="uid://cf1bti215nrhb"]
+[gd_scene load_steps=12 format=3 uid="uid://cf1bti215nrhb"]
 
 [ext_resource type="PackedScene" uid="uid://geh7augvu5ky" path="res://Prefabs/Player.tscn" id="1_a7hrv"]
 [ext_resource type="Script" uid="uid://wa4y4d6nf1mj" path="res://Scripts/Hotkeys.cs" id="1_ux7d8"]
 [ext_resource type="Script" uid="uid://bd1mlbimwnng5" path="res://Scripts/DebugTextDraw.cs" id="1_xf8r6"]
 [ext_resource type="Material" uid="uid://krrxg565dk6p" path="res://Materials/Grid.tres" id="2_w6rnr"]
+[ext_resource type="Texture2D" uid="uid://bw55meyfjcods" path="res://Textures/halo_planet.exr" id="3_jpanv"]
 [ext_resource type="PackedScene" uid="uid://cld7qpx1tehom" path="res://Prefabs/Box.tscn" id="3_xntlb"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_nr2ov"]
-size = Vector3(20, 0.1, 20)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_buya7"]
-size = Vector3(20, 0.1, 20)
-
-[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_oevmw"]
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ww542"]
+sky_top_color = Color(0.321762, 0.406578, 0.525353, 1)
+sky_horizon_color = Color(0.994572, 0.571218, 0.577169, 1)
+sky_curve = 0.106066
+sky_cover = ExtResource("3_jpanv")
+sky_cover_modulate = Color(0.314316, 0.314316, 0.314316, 1)
+ground_bottom_color = Color(0, 0, 0, 1)
+ground_horizon_color = Color(0.996078, 0.572549, 0.576471, 1)
+sun_angle_max = 154.45
+sun_curve = 0.0304594
+energy_multiplier = 0.5
 
 [sub_resource type="Sky" id="Sky_xp1ty"]
-sky_material = SubResource("PhysicalSkyMaterial_oevmw")
+sky_material = SubResource("ProceduralSkyMaterial_ww542")
+process_mode = 3
 
 [sub_resource type="Environment" id="Environment_wlcnk"]
 background_mode = 2
 background_energy_multiplier = 2.0
 sky = SubResource("Sky_xp1ty")
-tonemap_mode = 3
+tonemap_mode = 4
+ssao_enabled = true
+sdfgi_y_scale = 0
 glow_enabled = true
+glow_levels/1 = 1.0
+glow_levels/2 = 1.0
+glow_levels/4 = 1.0
+glow_levels/6 = 1.0
+glow_intensity = 0.29
+glow_blend_mode = 1
+glow_hdr_scale = 4.0
+glow_map_strength = 0.0
+volumetric_fog_ambient_inject = 0.09
+adjustment_enabled = true
+adjustment_brightness = 1.2
+adjustment_contrast = 1.2
+
+[sub_resource type="BoxMesh" id="BoxMesh_ww542"]
+size = Vector3(50, 0.1, 50)
+
+[sub_resource type="PrismMesh" id="PrismMesh_ww542"]
+size = Vector3(15, 2, 3)
 
 [node name="DemoScene" type="Node3D"]
 
@@ -41,22 +67,30 @@ offset_bottom = 23.0
 text = "Test"
 script = ExtResource("1_xf8r6")
 
+[node name="Reticle" type="Label" parent="UI"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -19.38
+offset_top = -16.825
+offset_right = 20.62
+offset_bottom = 6.17499
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 16
+text = "."
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="Player" parent="." instance=ExtResource("1_a7hrv")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.15, 0)
 
-[node name="Floor" type="MeshInstance3D" parent="."]
-material_override = ExtResource("2_w6rnr")
-mesh = SubResource("BoxMesh_nr2ov")
-
-[node name="Collider" type="StaticBody3D" parent="Floor"]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor/Collider"]
-shape = SubResource("BoxShape3D_buya7")
-
 [node name="Sun" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.979897, 0.199505, 0, -0.199505, 0.979897, 0, 0, 0)
-light_color = Color(1, 0.828254, 0.682359, 1)
-light_energy = 2.0
+transform = Transform3D(0.876826, 0.196464, -0.438838, 0.189996, 0.696847, 0.691596, 0.441676, -0.689787, 0.573686, 0, 0, 0)
+light_color = Color(0.996078, 0.572549, 0.576471, 1)
 shadow_enabled = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -69,3 +103,14 @@ collision_layer = 1
 [node name="Hotkeys" type="Node" parent="."]
 process_priority = -999999
 script = ExtResource("1_ux7d8")
+
+[node name="Floor" type="CSGMesh3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00200486, -0.00441217, 0.00393414)
+use_collision = true
+mesh = SubResource("BoxMesh_ww542")
+material = ExtResource("2_w6rnr")
+
+[node name="Ramp" type="CSGMesh3D" parent="Floor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.99, -15.5)
+mesh = SubResource("PrismMesh_ww542")
+material = ExtResource("2_w6rnr")

@@ -167,7 +167,6 @@ public partial class FPSController : RigidBody3D
         Crouch(true, delta);
     }
 
-    // TODO: This is broken in jolt???
     // Crouching code is also used for sliding
     private void Crouch(bool sliding, float delta)
     {
@@ -175,7 +174,10 @@ public partial class FPSController : RigidBody3D
 
         // Smoothly adjust collider height
         float targetHeight = check ? CrouchHeight : PlayerHeight;
-        ((CapsuleShape3D)collider.Shape).Height = Mathf.Lerp(((CapsuleShape3D)collider.Shape).Height, targetHeight, 10f * delta);
+
+        // TODO: This is broken in jolt???
+        //((CapsuleShape3D)collider.Shape).Height = Mathf.Lerp(((CapsuleShape3D)collider.Shape).Height, targetHeight, 10f * delta);
+        ((CapsuleShape3D)collider.Shape).Height = targetHeight;
 
         // Adjust collision shape position to keep feet grounded
         float heightDifference = (PlayerHeight - ((CapsuleShape3D)collider.Shape).Height) / 2f;
