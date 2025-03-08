@@ -14,7 +14,10 @@ public partial class GameProperties : Node
     {
         Game.Player = GetParent().GetNode<FPSController>("Player");
 
-        Game.Terrain = GetParent().GetNode<Terrain3D>("Terrain3D");
+        var terrainNode = GetParent().GetNode<Node3D>("Terrain3D");
+        var terrain = Terrain3D.Bind(terrainNode);
+
+        Game.Terrain = terrain;
         Game.Terrain.SetCamera(Game.Player.Camera);
     }
 
