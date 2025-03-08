@@ -20,10 +20,15 @@ config/icon="res://icon.svg"
 window/size/viewport_width=1600
 window/size/viewport_height=900
 window/size/resizable=false
+window/vsync/vsync_mode=0
 
 [dotnet]
 
 project/assembly_name="PhysicsController"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/cs_wrapper_generator_for_gde/plugin.cfg", "res://addons/terrain_3d/plugin.cfg")
 
 [input]
 

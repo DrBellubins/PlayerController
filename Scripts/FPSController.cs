@@ -14,7 +14,7 @@ public partial class FPSController : RigidBody3D
     [Export] public float Friction = 0.9f;          // Linear damping applied manually
 
     // Camera variables
-    private Camera3D camera;
+    public Camera3D Camera;
     private float gravity = (float)ProjectSettings.GetSetting("physics/3d/default_gravity");
 
     // Player variables
@@ -36,7 +36,7 @@ public partial class FPSController : RigidBody3D
     public override void _Ready()
     {
         // Get the camera node (assumes camera is a child node)
-        camera = GetNode<Camera3D>("Camera");
+        Camera = GetNode<Camera3D>("Camera");
 
         // Get ground check raycast
         groundRay = GetNode<RayCast3D>("GroundRay");
@@ -106,7 +106,7 @@ public partial class FPSController : RigidBody3D
 
         // Get input direction
         Vector2 inputDir = Input.GetVector("move_left", "move_right", "move_forward", "move_backward");
-        direction = (camera.GlobalTransform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
+        direction = (Camera.GlobalTransform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
 
         // Ignore camera pitch
         direction.Y = 0f;
@@ -188,9 +188,9 @@ public partial class FPSController : RigidBody3D
 
         // Adjust camera position
         float cameraTargetY = check ? CrouchHeight : PlayerHeight;
-        Vector3 cameraPos = camera.Position;
+        Vector3 cameraPos = Camera.Position;
         cameraPos.Y = Mathf.Lerp(cameraPos.Y, cameraTargetY, 10f * delta);
-        camera.Position = cameraPos;
+        Camera.Position = cameraPos;
     }
 
     private void HandleCameraRotation()
@@ -205,7 +205,7 @@ public partial class FPSController : RigidBody3D
         verticalRotation -= mouseInput.Y * MouseSensitivity;
         verticalRotation = Mathf.Clamp(verticalRotation, -89.0f, 89.0f);
 
-        camera.RotationDegrees = new Vector3(
+        Camera.RotationDegrees = new Vector3(
             verticalRotation,
             horizontalRotation,
             0

@@ -1,11 +1,16 @@
-[gd_scene load_steps=12 format=3 uid="uid://cf1bti215nrhb"]
+[gd_scene load_steps=25 format=3 uid="uid://cf1bti215nrhb"]
 
+[ext_resource type="Script" uid="uid://cqk0ecbdfqoxc" path="res://Scripts/GameProperties.cs" id="1_3tqca"]
 [ext_resource type="PackedScene" uid="uid://geh7augvu5ky" path="res://Prefabs/Player.tscn" id="1_a7hrv"]
-[ext_resource type="Script" uid="uid://wa4y4d6nf1mj" path="res://Scripts/Hotkeys.cs" id="1_ux7d8"]
 [ext_resource type="Script" uid="uid://bd1mlbimwnng5" path="res://Scripts/DebugTextDraw.cs" id="1_xf8r6"]
-[ext_resource type="Material" uid="uid://krrxg565dk6p" path="res://Materials/Grid.tres" id="2_w6rnr"]
 [ext_resource type="Texture2D" uid="uid://bw55meyfjcods" path="res://Textures/halo_planet.exr" id="3_jpanv"]
 [ext_resource type="PackedScene" uid="uid://cld7qpx1tehom" path="res://Prefabs/Box.tscn" id="3_xntlb"]
+[ext_resource type="Texture2D" uid="uid://b1ytxwc6vwk6i" path="res://Textures/Terrain/Ground037_AlbedoHeight.png" id="7_okl2h"]
+[ext_resource type="Texture2D" uid="uid://dxjd37bo62b0g" path="res://Textures/Terrain/Ground037_NormalRough2.png" id="7_r4p77"]
+[ext_resource type="Texture2D" uid="uid://vaujfq8g0qj5" path="res://Textures/Terrain/Rock035_AlbedoHeight.png" id="9_3tqca"]
+[ext_resource type="Texture2D" uid="uid://c8tqto6otgb8x" path="res://Textures/Terrain/Rocks007_AlbedoHeight.png" id="10_ad2i4"]
+[ext_resource type="Texture2D" uid="uid://bfffydfnyp84n" path="res://Textures/Terrain/Rock035_NormalRough.png" id="10_sx1u2"]
+[ext_resource type="Texture2D" uid="uid://bemrn80w2jn07" path="res://Textures/Terrain/Rocks007_NormalRough.png" id="11_3tqca"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ww542"]
 sky_top_color = Color(0.321762, 0.406578, 0.525353, 1)
@@ -39,18 +44,111 @@ glow_intensity = 0.29
 glow_blend_mode = 1
 glow_hdr_scale = 4.0
 glow_map_strength = 0.0
+fog_enabled = true
+fog_mode = 1
+fog_light_color = Color(0.996078, 0.572549, 0.576471, 1)
+fog_sun_scatter = 0.21
+fog_density = 0.398
+fog_sky_affect = 0.0
+fog_depth_begin = 500.0
+fog_depth_end = 3125.8
 volumetric_fog_ambient_inject = 0.09
 adjustment_enabled = true
 adjustment_brightness = 1.2
 adjustment_contrast = 1.2
 
-[sub_resource type="BoxMesh" id="BoxMesh_ww542"]
-size = Vector3(50, 0.1, 50)
+[sub_resource type="Gradient" id="Gradient_jpanv"]
+offsets = PackedFloat32Array(0.2, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
 
-[sub_resource type="PrismMesh" id="PrismMesh_ww542"]
-size = Vector3(15, 2, 3)
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_foia1"]
+noise_type = 2
+frequency = 0.03
+cellular_jitter = 3.0
+cellular_return_type = 0
+domain_warp_enabled = true
+domain_warp_type = 1
+domain_warp_amplitude = 50.0
+domain_warp_fractal_type = 2
+domain_warp_fractal_lacunarity = 1.5
+domain_warp_fractal_gain = 1.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_r4wj5"]
+seamless = true
+color_ramp = SubResource("Gradient_jpanv")
+noise = SubResource("FastNoiseLite_foia1")
+
+[sub_resource type="Terrain3DMaterial" id="Terrain3DMaterial_r4p77"]
+_shader_parameters = {
+&"auto_base_texture": 2,
+&"auto_height_reduction": 0.1,
+&"auto_overlay_texture": 0,
+&"auto_slope": 1.099,
+&"blend_sharpness": 0.355,
+&"height_blending": true,
+&"macro_variation1": Color(0.762025, 0.70781, 0.586211, 1),
+&"macro_variation2": Color(0.915442, 0.807183, 0.735243, 1),
+&"noise1_angle": 0.0,
+&"noise1_offset": Vector2(0.5, 0.5),
+&"noise1_scale": 0.04,
+&"noise2_scale": 0.076,
+&"noise3_scale": 0.225,
+&"noise_texture": SubResource("NoiseTexture2D_r4wj5"),
+&"vertex_normals_distance": 128.0,
+&"world_noise_height": 64.0,
+&"world_noise_lod_distance": 7500.0,
+&"world_noise_max_octaves": 4,
+&"world_noise_min_octaves": 2,
+&"world_noise_offset": Vector3(0, 0, 0),
+&"world_noise_region_blend": 0.33,
+&"world_noise_scale": 5.0
+}
+world_background = 2
+auto_shader = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_okl2h"]
+transparency = 4
+cull_mode = 2
+vertex_color_use_as_albedo = true
+backlight_enabled = true
+backlight = Color(0.5, 0.5, 0.5, 1)
+distance_fade_mode = 1
+distance_fade_min_distance = 85.0
+distance_fade_max_distance = 75.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_ad2i4"]
+material_override = SubResource("StandardMaterial3D_okl2h")
+generated_type = 1
+
+[sub_resource type="Terrain3DTextureAsset" id="Terrain3DTextureAsset_8ep1j"]
+name = "Ground037_AlbedoHeight"
+albedo_texture = ExtResource("7_okl2h")
+normal_texture = ExtResource("7_r4p77")
+detiling = 0.15
+
+[sub_resource type="Terrain3DTextureAsset" id="Terrain3DTextureAsset_tse6v"]
+name = "Rock035_AlbedoHeight"
+id = 1
+albedo_texture = ExtResource("9_3tqca")
+normal_texture = ExtResource("10_sx1u2")
+detiling = 0.072
+
+[sub_resource type="Terrain3DTextureAsset" id="Terrain3DTextureAsset_sx1u2"]
+name = "Rocks007_AlbedoHeight"
+id = 2
+albedo_texture = ExtResource("10_ad2i4")
+normal_texture = ExtResource("11_3tqca")
+uv_scale = 0.01
+detiling = 0.018
+
+[sub_resource type="Terrain3DAssets" id="Terrain3DAssets_3tqca"]
+mesh_list = Array[Terrain3DMeshAsset]([SubResource("Terrain3DMeshAsset_ad2i4")])
+texture_list = Array[Terrain3DTextureAsset]([SubResource("Terrain3DTextureAsset_8ep1j"), SubResource("Terrain3DTextureAsset_tse6v"), SubResource("Terrain3DTextureAsset_sx1u2")])
 
 [node name="DemoScene" type="Node3D"]
+
+[node name="GameProperties" type="Node" parent="."]
+script = ExtResource("1_3tqca")
 
 [node name="UI" type="Control" parent="."]
 layout_mode = 3
@@ -86,7 +184,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Player" parent="." instance=ExtResource("1_a7hrv")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.15, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.96846, 0)
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.876826, 0.196464, -0.438838, 0.189996, 0.696847, 0.691596, 0.441676, -0.689787, 0.573686, 0, 0, 0)
@@ -97,20 +195,13 @@ shadow_enabled = true
 environment = SubResource("Environment_wlcnk")
 
 [node name="Box" parent="." instance=ExtResource("3_xntlb")]
-transform = Transform3D(0.829067, 0.55915, 0, -0.333606, 0.494647, -0.802516, -0.448726, 0.665339, 0.596631, 0, 3.922, 2.05946)
+transform = Transform3D(0.829067, 0.55915, 0, -0.333606, 0.494647, -0.802516, -0.448726, 0.665339, 0.596631, 0, 6.08889, 2.05946)
 collision_layer = 1
 
-[node name="Hotkeys" type="Node" parent="."]
-process_priority = -999999
-script = ExtResource("1_ux7d8")
-
-[node name="Floor" type="CSGMesh3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00200486, -0.00441217, 0.00393414)
-use_collision = true
-mesh = SubResource("BoxMesh_ww542")
-material = ExtResource("2_w6rnr")
-
-[node name="Ramp" type="CSGMesh3D" parent="Floor"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.99, -15.5)
-mesh = SubResource("PrismMesh_ww542")
-material = ExtResource("2_w6rnr")
+[node name="Terrain3D" type="Terrain3D" parent="."]
+data_directory = "res://TerrainData"
+material = SubResource("Terrain3DMaterial_r4p77")
+assets = SubResource("Terrain3DAssets_3tqca")
+cast_shadows = 2
+top_level = true
+metadata/_edit_lock_ = true
