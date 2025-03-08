@@ -37,27 +37,28 @@ public partial class Terrain3DEditor : GodotObject
     {
         Add = 0,
         Subtract = 1,
-        Replace = 2,
-        Average = 3,
-        Gradient = 4,
-        OpMax = 5,
+        Multiply = 2,
+        Divide = 3,
+        Replace = 4,
+        Average = 5,
+        Gradient = 6,
+        OpMax = 7,
     }
 
     public enum Tool : long
     {
-        Sculpt = 1,
-        Height = 2,
-        Texture = 3,
-        Color = 4,
-        Roughness = 5,
-        Angle = 10,
-        Scale = 11,
+        Height = 0,
+        Texture = 1,
+        Color = 2,
+        Roughness = 3,
+        Angle = 4,
+        Scale = 5,
         Autoshader = 6,
         Holes = 7,
         Navigation = 8,
         Instancer = 9,
-        Region = 0,
-        Max = 12,
+        Region = 10,
+        Max = 11,
     }
 
 #endregion
@@ -80,15 +81,13 @@ public partial class Terrain3DEditor : GodotObject
 
     public void StartOperation(Vector3 position) => Call("start_operation", position);
 
-    public bool IsOperating() => Call("is_operating").As<bool>();
-
     public void Operate(Vector3 position, float cameraDirection) => Call("operate", position, cameraDirection);
-
-    public void BackupRegion(Terrain3DRegion region) => Call("backup_region", (Resource)region);
 
     public void StopOperation() => Call("stop_operation");
 
-    public void ApplyUndo(Godot.Collections.Dictionary data) => Call("apply_undo", data);
+    public bool IsOperating() => Call("is_operating").As<bool>();
+
+    public void ApplyUndo(Godot.Collections.Dictionary maps) => Call("apply_undo", maps);
 
 #endregion
 

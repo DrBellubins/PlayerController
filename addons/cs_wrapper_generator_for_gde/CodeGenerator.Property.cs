@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using Godot.Collections;
+using static GDExtensionAPIGenerator.CodeGenerator.GdType;
 
 namespace GDExtensionAPIGenerator;
 
@@ -65,6 +66,7 @@ internal static partial class CodeGenerator
         public bool IsProperty(string methodName) => methodName == PropertyGetter || methodName == PropertySetter;
         public string PropertyGetter => ClassDB.ClassGetPropertyGetter(ClassName, NativeName);
         public string PropertySetter => ClassDB.ClassGetPropertySetter(ClassName, NativeName);
+
         public override string ToString() =>
             $"""
              PropertyInfo:
@@ -75,7 +77,6 @@ internal static partial class CodeGenerator
              {TAB1}{nameof(HintString)}: {HintString}
              {TAB1}{nameof(Usage)}: {Usage}
              {TAB1}{nameof(IsGroupOrSubgroup)}: {IsGroupOrSubgroup}
-             {TAB1}{nameof(IsVoid)}: {IsVoid}
              {TAB1}{nameof(TypeClass)}: {TypeClass}
              {TAB1}{nameof(PropertyGetter)}: {PropertyGetter}
              {TAB1}{nameof(PropertySetter)}: {PropertySetter}

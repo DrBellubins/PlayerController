@@ -1,5 +1,7 @@
 using System;
+using System.Linq;
 using Godot;
+using Godot.Collections;
 
 namespace GDExtension.Wrappers;
 
@@ -43,15 +45,15 @@ public partial class Terrain3DAssets : Resource
 
 #region Properties
 
-    public Godot.Collections.Array<unsupported format character> MeshList
+    public Godot.Collections.Array<Terrain3DMeshAsset> MeshList
     {
-        get => (Godot.Collections.Array<unsupported format character>)Get("mesh_list");
+        get => new(Get("mesh_list").AsGodotArray().Select(variant => Terrain3DMeshAsset.Bind(variant.AsGodotObject())));
         set => Set("mesh_list", Variant.From(value));
     }
 
-    public Godot.Collections.Array<unsupported format character> TextureList
+    public Godot.Collections.Array<Terrain3DTextureAsset> TextureList
     {
-        get => (Godot.Collections.Array<unsupported format character>)Get("texture_list");
+        get => (Godot.Collections.Array<Terrain3DTextureAsset>)Get("texture_list");
         set => Set("texture_list", Variant.From(value));
     }
 
@@ -127,43 +129,22 @@ public partial class Terrain3DAssets : Resource
 
 #region Methods
 
-    public void SetTexture(int id, Terrain3DTextureAsset texture) => Call("set_texture", id, (Resource)texture);
-
-    public Terrain3DTextureAsset GetTexture(int id) => GDExtensionHelper.Bind<Terrain3DTextureAsset>(Call("get_texture", id).As<GodotObject>());
-
-    public void SetTextureList(Godot.Collections.Array<Terrain3DTextureAsset> textureList) => Call("set_texture_list", textureList);
-
-    public Godot.Collections.Array<Terrain3DTextureAsset> GetTextureList() => GDExtensionHelper.Cast<Terrain3DTextureAsset>(Call("get_texture_list").As<Godot.Collections.Array<Godot.GodotObject>>());
-
-    public int GetTextureCount() => Call("get_texture_count").As<int>();
-
-    public Rid GetAlbedoArrayRid() => Call("get_albedo_array_rid").As<Rid>();
-
-    public Rid GetNormalArrayRid() => Call("get_normal_array_rid").As<Rid>();
-
-    public Color[] GetTextureColors() => Call("get_texture_colors").As<Color[]>();
-
-    public float[] GetTextureUvScales() => Call("get_texture_uv_scales").As<float[]>();
-
-    public float[] GetTextureDetiles() => Call("get_texture_detiles").As<float[]>();
-
-    public void UpdateTextureList() => Call("update_texture_list");
-
     public void SetMeshAsset(int id, Terrain3DMeshAsset mesh) => Call("set_mesh_asset", id, (Resource)mesh);
 
     public Terrain3DMeshAsset GetMeshAsset(int id) => GDExtensionHelper.Bind<Terrain3DMeshAsset>(Call("get_mesh_asset", id).As<GodotObject>());
-
-    public void SetMeshList(Godot.Collections.Array<Terrain3DMeshAsset> meshList) => Call("set_mesh_list", meshList);
-
-    public Godot.Collections.Array<Terrain3DMeshAsset> GetMeshList() => GDExtensionHelper.Cast<Terrain3DMeshAsset>(Call("get_mesh_list").As<Godot.Collections.Array<Godot.GodotObject>>());
 
     public int GetMeshCount() => Call("get_mesh_count").As<int>();
 
     public void CreateMeshThumbnails(int id, Vector2I size) => Call("create_mesh_thumbnails", id, size);
 
-    public void UpdateMeshList() => Call("update_mesh_list");
+    public void SetTexture(int id, Terrain3DTextureAsset texture) => Call("set_texture", id, (Resource)texture);
 
-    public int Save(string path) => Call("save", path).As<int>();
+    public Terrain3DTextureAsset GetTexture(int id) => GDExtensionHelper.Bind<Terrain3DTextureAsset>(Call("get_texture", id).As<GodotObject>());
+
+    public int GetTextureCount() => Call("get_texture_count").As<int>();
+
+    public void Save() => Call("save");
 
 #endregion
+
 }

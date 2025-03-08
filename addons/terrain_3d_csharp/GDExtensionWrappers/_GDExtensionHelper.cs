@@ -6,8 +6,8 @@ using Godot;
 
 public static class GDExtensionHelper
 {
-    private static readonly ConcurrentDictionary<string, GodotObject> _instances = [];
-    private static readonly ConcurrentDictionary<Type,Variant> _scripts = [];
+    private static readonly ConcurrentDictionary<string, GodotObject> _instances = new ();
+    private static readonly ConcurrentDictionary<Type,Variant> _scripts = new ();
     /// <summary>
     /// Calls a static method within the given type.
     /// </summary>

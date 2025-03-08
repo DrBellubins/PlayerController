@@ -49,14 +49,6 @@ public partial class Terrain3DUtil : GodotObject
 
     public static int EncBlend(int blend) => GDExtensionHelper.Call("Terrain3DUtil", "enc_blend", blend).As<int>();
 
-    public static int GetUvRotation(int pixel) => GDExtensionHelper.Call("Terrain3DUtil", "get_uv_rotation", pixel).As<int>();
-
-    public static int EncUvRotation(int rotation) => GDExtensionHelper.Call("Terrain3DUtil", "enc_uv_rotation", rotation).As<int>();
-
-    public static int GetUvScale(int pixel) => GDExtensionHelper.Call("Terrain3DUtil", "get_uv_scale", pixel).As<int>();
-
-    public static int EncUvScale(int scale) => GDExtensionHelper.Call("Terrain3DUtil", "enc_uv_scale", scale).As<int>();
-
     public static bool IsHole(int pixel) => GDExtensionHelper.Call("Terrain3DUtil", "is_hole", pixel).As<bool>();
 
     public static int EncHole(bool pixel) => GDExtensionHelper.Call("Terrain3DUtil", "enc_hole", pixel).As<int>();
@@ -69,9 +61,13 @@ public partial class Terrain3DUtil : GodotObject
 
     public static int EncAuto(bool pixel) => GDExtensionHelper.Call("Terrain3DUtil", "enc_auto", pixel).As<int>();
 
-    public static Vector2I FilenameToLocation(string filename) => GDExtensionHelper.Call("Terrain3DUtil", "filename_to_location", filename).As<Vector2I>();
+    public static int GetUvRotation(int pixel) => GDExtensionHelper.Call("Terrain3DUtil", "get_uv_rotation", pixel).As<int>();
 
-    public static string LocationToFilename(Vector2I regionLocation) => GDExtensionHelper.Call("Terrain3DUtil", "location_to_filename", regionLocation).As<string>();
+    public static int EncUvRotation(int rotation) => GDExtensionHelper.Call("Terrain3DUtil", "enc_uv_rotation", rotation).As<int>();
+
+    public static int GetUvScale(int pixel) => GDExtensionHelper.Call("Terrain3DUtil", "get_uv_scale", pixel).As<int>();
+
+    public static int EncUvScale(int scale) => GDExtensionHelper.Call("Terrain3DUtil", "enc_uv_scale", scale).As<int>();
 
     public static Image BlackToAlpha(Image image) => GDExtensionHelper.Call("Terrain3DUtil", "black_to_alpha", image).As<Image>();
 
@@ -83,9 +79,7 @@ public partial class Terrain3DUtil : GodotObject
 
     public static Image LoadImage(string fileName, int cacheMode, Vector2 r16HeightRange, Vector2I r16Size) => GDExtensionHelper.Call("Terrain3DUtil", "load_image", fileName, cacheMode, r16HeightRange, r16Size).As<Image>();
 
-    public static Image PackImage(Image srcRgb, Image srcA, bool invertGreen, bool invertAlpha, int alphaChannel) => GDExtensionHelper.Call("Terrain3DUtil", "pack_image", srcRgb, srcA, invertGreen, invertAlpha, alphaChannel).As<Image>();
-
-    public static Image LuminanceToHeight(Image srcRgb) => GDExtensionHelper.Call("Terrain3DUtil", "luminance_to_height", srcRgb).As<Image>();
+    public static Image PackImage(Image srcRgb, Image srcR, bool invertGreenChannel) => GDExtensionHelper.Call("Terrain3DUtil", "pack_image", srcRgb, srcR, invertGreenChannel).As<Image>();
 
 #endregion
 

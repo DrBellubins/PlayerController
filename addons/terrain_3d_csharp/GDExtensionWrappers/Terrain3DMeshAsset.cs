@@ -68,27 +68,15 @@ public partial class Terrain3DMeshAsset : Resource
         set => Set("density", Variant.From(value));
     }
 
-    public float VisibilityRange
-    {
-        get => (float)Get("visibility_range");
-        set => Set("visibility_range", Variant.From(value));
-    }
-
-    public long /*Off,On,Double-Sided,ShadowsOnly*/ CastShadows
-    {
-        get => (long /*Off,On,Double-Sided,ShadowsOnly*/)Get("cast_shadows").As<Int64>();
-        set => Set("cast_shadows", Variant.From(value));
-    }
-
     public PackedScene SceneFile
     {
         get => (PackedScene)Get("scene_file");
         set => Set("scene_file", Variant.From(value));
     }
 
-    public BaseMaterial3D,ShaderMaterial MaterialOverride
+    public Material MaterialOverride
     {
-        get => (BaseMaterial3D,ShaderMaterial)Get("material_override");
+        get => (Material)Get("material_override");
         set => Set("material_override", Variant.From(value));
     }
 
@@ -108,6 +96,12 @@ public partial class Terrain3DMeshAsset : Resource
     {
         get => (Vector2)Get("generated_size");
         set => Set("generated_size", Variant.From(value));
+    }
+
+    public long /*Off,On,Double-Sided,ShadowsOnly*/ CastShadows
+    {
+        get => (long /*Off,On,Double-Sided,ShadowsOnly*/)Get("cast_shadows").As<Int64>();
+        set => Set("cast_shadows", Variant.From(value));
     }
 
 #endregion
@@ -210,34 +204,34 @@ public partial class Terrain3DMeshAsset : Resource
         }
     }
 
-    public delegate void InstancerSettingChangedHandler();
+    public delegate void CastShadowsChangedHandler();
 
-    private InstancerSettingChangedHandler _instancerSettingChanged_backing;
-    private Callable _instancerSettingChanged_backing_callable;
-    public event InstancerSettingChangedHandler InstancerSettingChanged
+    private CastShadowsChangedHandler _castShadowsChanged_backing;
+    private Callable _castShadowsChanged_backing_callable;
+    public event CastShadowsChangedHandler CastShadowsChanged
     {
         add
         {
-            if(_instancerSettingChanged_backing == null)
+            if(_castShadowsChanged_backing == null)
             {
-                _instancerSettingChanged_backing_callable = Callable.From(
+                _castShadowsChanged_backing_callable = Callable.From(
                     () =>
                     {
-                        _instancerSettingChanged_backing?.Invoke();
+                        _castShadowsChanged_backing?.Invoke();
                     }
                 );
-                Connect("instancer_setting_changed", _instancerSettingChanged_backing_callable);
+                Connect("cast_shadows_changed", _castShadowsChanged_backing_callable);
             }
-            _instancerSettingChanged_backing += value;
+            _castShadowsChanged_backing += value;
         }
         remove
         {
-            _instancerSettingChanged_backing -= value;
+            _castShadowsChanged_backing -= value;
             
-            if(_instancerSettingChanged_backing == null)
+            if(_castShadowsChanged_backing == null)
             {
-                Disconnect("instancer_setting_changed", _instancerSettingChanged_backing_callable);
-                _instancerSettingChanged_backing_callable = default;
+                Disconnect("cast_shadows_changed", _castShadowsChanged_backing_callable);
+                _castShadowsChanged_backing_callable = default;
             }
         }
     }
@@ -247,50 +241,6 @@ public partial class Terrain3DMeshAsset : Resource
 #region Methods
 
     public void Clear() => Call("clear");
-
-    public void SetName(string name) => Call("set_name", name);
-
-    public string GetName() => Call("get_name").As<string>();
-
-    public void SetId(int id) => Call("set_id", id);
-
-    public int GetId() => Call("get_id").As<int>();
-
-    public void SetHeightOffset(float offset) => Call("set_height_offset", offset);
-
-    public float GetHeightOffset() => Call("get_height_offset").As<float>();
-
-    public void SetDensity(float density) => Call("set_density", density);
-
-    public float GetDensity() => Call("get_density").As<float>();
-
-    public void SetVisibilityRange(float distance) => Call("set_visibility_range", distance);
-
-    public float GetVisibilityRange() => Call("get_visibility_range").As<float>();
-
-    public void SetCastShadows(int mode) => Call("set_cast_shadows", mode);
-
-    public int GetCastShadows() => Call("get_cast_shadows").As<int>();
-
-    public void SetSceneFile(PackedScene sceneFile) => Call("set_scene_file", sceneFile);
-
-    public PackedScene GetSceneFile() => Call("get_scene_file").As<PackedScene>();
-
-    public void SetMaterialOverride(Material material) => Call("set_material_override", material);
-
-    public Material GetMaterialOverride() => Call("get_material_override").As<Material>();
-
-    public void SetGeneratedType(int type) => Call("set_generated_type", type);
-
-    public int GetGeneratedType() => Call("get_generated_type").As<int>();
-
-    public void SetGeneratedFaces(int count) => Call("set_generated_faces", count);
-
-    public int GetGeneratedFaces() => Call("get_generated_faces").As<int>();
-
-    public void SetGeneratedSize(Vector2 size) => Call("set_generated_size", size);
-
-    public Vector2 GetGeneratedSize() => Call("get_generated_size").As<Vector2>();
 
     public Mesh GetMesh(int index) => Call("get_mesh", index).As<Mesh>();
 

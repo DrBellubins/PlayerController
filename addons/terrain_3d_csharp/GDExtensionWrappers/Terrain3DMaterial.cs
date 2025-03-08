@@ -176,22 +176,10 @@ public partial class Terrain3DMaterial : Resource
         set => Set("show_texture_rough", Variant.From(value));
     }
 
-    public bool ShowRegionGrid
-    {
-        get => (bool)Get("show_region_grid");
-        set => Set("show_region_grid", Variant.From(value));
-    }
-
     public bool ShowVertexGrid
     {
         get => (bool)Get("show_vertex_grid");
         set => Set("show_vertex_grid", Variant.From(value));
-    }
-
-    public bool ShowInstancerGrid
-    {
-        get => (bool)Get("show_instancer_grid");
-        set => Set("show_instancer_grid", Variant.From(value));
     }
 
 #endregion
@@ -202,109 +190,21 @@ public partial class Terrain3DMaterial : Resource
 
     public Godot.Collections.Dictionary GetShaderParameters() => Call("_get_shader_parameters").As<Godot.Collections.Dictionary>();
 
-    public void Update() => Call("update");
-
     public Rid GetMaterialRid() => Call("get_material_rid").As<Rid>();
 
     public Rid GetShaderRid() => Call("get_shader_rid").As<Rid>();
 
-    public void SetWorldBackground(int background) => Call("set_world_background", background);
-
-    public int GetWorldBackground() => Call("get_world_background").As<int>();
-
-    public void SetTextureFiltering(int filtering) => Call("set_texture_filtering", filtering);
-
-    public int GetTextureFiltering() => Call("get_texture_filtering").As<int>();
-
-    public void SetAutoShader(bool enabled) => Call("set_auto_shader", enabled);
-
-    public bool GetAutoShader() => Call("get_auto_shader").As<bool>();
-
-    public void SetDualScaling(bool enabled) => Call("set_dual_scaling", enabled);
-
-    public bool GetDualScaling() => Call("get_dual_scaling").As<bool>();
+    public Rid GetRegionBlendMap() => Call("get_region_blend_map").As<Rid>();
 
     public void EnableShaderOverride(bool enabled) => Call("enable_shader_override", enabled);
 
     public bool IsShaderOverrideEnabled() => Call("is_shader_override_enabled").As<bool>();
 
-    public void SetShaderOverride(Shader shader) => Call("set_shader_override", shader);
-
-    public Shader GetShaderOverride() => Call("get_shader_override").As<Shader>();
-
     public void SetShaderParam(StringName name, Variant? value) => Call("set_shader_param", name, value ?? new Variant());
 
     public void GetShaderParam(StringName name) => Call("get_shader_param", name);
 
-    public void SetShowCheckered(bool enabled) => Call("set_show_checkered", enabled);
-
-    public bool GetShowCheckered() => Call("get_show_checkered").As<bool>();
-
-    public void SetShowGrey(bool enabled) => Call("set_show_grey", enabled);
-
-    public bool GetShowGrey() => Call("get_show_grey").As<bool>();
-
-    public void SetShowHeightmap(bool enabled) => Call("set_show_heightmap", enabled);
-
-    public bool GetShowHeightmap() => Call("get_show_heightmap").As<bool>();
-
-    public void SetShowColormap(bool enabled) => Call("set_show_colormap", enabled);
-
-    public bool GetShowColormap() => Call("get_show_colormap").As<bool>();
-
-    public void SetShowRoughmap(bool enabled) => Call("set_show_roughmap", enabled);
-
-    public bool GetShowRoughmap() => Call("get_show_roughmap").As<bool>();
-
-    public void SetShowControlTexture(bool enabled) => Call("set_show_control_texture", enabled);
-
-    public bool GetShowControlTexture() => Call("get_show_control_texture").As<bool>();
-
-    public void SetShowControlAngle(bool enabled) => Call("set_show_control_angle", enabled);
-
-    public bool GetShowControlAngle() => Call("get_show_control_angle").As<bool>();
-
-    public void SetShowControlScale(bool enabled) => Call("set_show_control_scale", enabled);
-
-    public bool GetShowControlScale() => Call("get_show_control_scale").As<bool>();
-
-    public void SetShowControlBlend(bool enabled) => Call("set_show_control_blend", enabled);
-
-    public bool GetShowControlBlend() => Call("get_show_control_blend").As<bool>();
-
-    public void SetShowAutoshader(bool enabled) => Call("set_show_autoshader", enabled);
-
-    public bool GetShowAutoshader() => Call("get_show_autoshader").As<bool>();
-
-    public void SetShowNavigation(bool enabled) => Call("set_show_navigation", enabled);
-
-    public bool GetShowNavigation() => Call("get_show_navigation").As<bool>();
-
-    public void SetShowTextureHeight(bool enabled) => Call("set_show_texture_height", enabled);
-
-    public bool GetShowTextureHeight() => Call("get_show_texture_height").As<bool>();
-
-    public void SetShowTextureNormal(bool enabled) => Call("set_show_texture_normal", enabled);
-
-    public bool GetShowTextureNormal() => Call("get_show_texture_normal").As<bool>();
-
-    public void SetShowTextureRough(bool enabled) => Call("set_show_texture_rough", enabled);
-
-    public bool GetShowTextureRough() => Call("get_show_texture_rough").As<bool>();
-
-    public void SetShowRegionGrid(bool enabled) => Call("set_show_region_grid", enabled);
-
-    public bool GetShowRegionGrid() => Call("get_show_region_grid").As<bool>();
-
-    public void SetShowVertexGrid(bool enabled) => Call("set_show_vertex_grid", enabled);
-
-    public bool GetShowVertexGrid() => Call("get_show_vertex_grid").As<bool>();
-
-    public void SetShowInstancerGrid(bool enabled) => Call("set_show_instancer_grid", enabled);
-
-    public bool GetShowInstancerGrid() => Call("get_show_instancer_grid").As<bool>();
-
-    public int Save(string path) => Call("save", path).As<int>();
+    public void Save() => Call("save");
 
 #endregion
 

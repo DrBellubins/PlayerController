@@ -51,15 +51,15 @@ public partial class Terrain3DTextureAsset : Resource
         set => Set("albedo_color", Variant.From(value));
     }
 
-    public ImageTexture,CompressedTexture2D AlbedoTexture
+    public Texture2D AlbedoTexture
     {
-        get => (ImageTexture,CompressedTexture2D)Get("albedo_texture");
+        get => (Texture2D)Get("albedo_texture");
         set => Set("albedo_texture", Variant.From(value));
     }
 
-    public ImageTexture,CompressedTexture2D NormalTexture
+    public Texture2D NormalTexture
     {
-        get => (ImageTexture,CompressedTexture2D)Get("normal_texture");
+        get => (Texture2D)Get("normal_texture");
         set => Set("normal_texture", Variant.From(value));
     }
 
@@ -180,34 +180,6 @@ public partial class Terrain3DTextureAsset : Resource
 #region Methods
 
     public void Clear() => Call("clear");
-
-    public void SetName(string name) => Call("set_name", name);
-
-    public string GetName() => Call("get_name").As<string>();
-
-    public void SetId(int id) => Call("set_id", id);
-
-    public int GetId() => Call("get_id").As<int>();
-
-    public void SetAlbedoColor(Color color) => Call("set_albedo_color", color);
-
-    public Color GetAlbedoColor() => Call("get_albedo_color").As<Color>();
-
-    public void SetAlbedoTexture(Texture2D texture) => Call("set_albedo_texture", texture);
-
-    public Texture2D GetAlbedoTexture() => Call("get_albedo_texture").As<Texture2D>();
-
-    public void SetNormalTexture(Texture2D texture) => Call("set_normal_texture", texture);
-
-    public Texture2D GetNormalTexture() => Call("get_normal_texture").As<Texture2D>();
-
-    public void SetUvScale(float scale) => Call("set_uv_scale", scale);
-
-    public float GetUvScale() => Call("get_uv_scale").As<float>();
-
-    public void SetDetiling(float detiling) => Call("set_detiling", detiling);
-
-    public float GetDetiling() => Call("get_detiling").As<float>();
 
 #endregion
 

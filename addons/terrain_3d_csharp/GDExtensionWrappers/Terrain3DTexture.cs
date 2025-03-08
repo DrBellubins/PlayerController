@@ -47,12 +47,4 @@ public partial class Terrain3DTexture : Terrain3DTextureAsset
 
 #endregion
 
-#region Methods
-
-    public void SetUvRotation(float rotation) => Call("set_uv_rotation", rotation);
-
-    public float GetUvRotation() => Call("get_uv_rotation").As<float>();
-
-#endregion
-
 }

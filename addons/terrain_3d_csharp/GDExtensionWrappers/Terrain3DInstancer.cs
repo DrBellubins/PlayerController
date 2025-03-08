@@ -8,7 +8,9 @@ public partial class Terrain3DInstancer : GodotObject
     public static readonly StringName GDExtensionName = "Terrain3DInstancer";
 
     [Obsolete("Wrapper classes cannot be constructed with Ctor (it only instantiate the underlying GodotObject), please use the Instantiate() method instead.")]
-    protected Terrain3DInstancer() { }
+    protected Terrain3DInstancer()
+    {
+    }
 
     /// <summary>
     /// Creates an instance of the GDExtension <see cref="Terrain3DInstancer"/> type, and attaches the wrapper script to it.
@@ -27,40 +29,32 @@ public partial class Terrain3DInstancer : GodotObject
     /// <remarks>The developer should only supply the <paramref name="godotObject"/> that represents the correct underlying GDExtension type.</remarks>
     /// <param name="godotObject">The <paramref name="godotObject"/> that represents the correct underlying GDExtension type.</param>
     /// <returns>The existing or a new instance of the <see cref="Terrain3DInstancer"/> wrapper script attached to the supplied <paramref name="godotObject"/>.</returns>
-    public static Terrain3DInstancer Bind(GodotObject godotObject)
+    public static Terrain3DInstancer? Bind(GodotObject? godotObject)
     {
-        return GDExtensionHelper.Bind<Terrain3DInstancer>(godotObject);
+        return godotObject == null
+            ? null
+            : GDExtensionHelper.Bind<Terrain3DInstancer>(godotObject);
     }
-#region Methods
 
+    #region Methods
+
+    public void Initialize(Terrain3D terrain3D) => Call("initialize", terrain3D);
+    
     public void ClearByMesh(int meshId) => Call("clear_by_mesh", meshId);
 
-    public void ClearByLocation(Vector2I regionLocation, int meshId) => Call("clear_by_location", regionLocation, meshId);
+    public void ClearByRegionId(int regionId, int meshId) => Call("clear_by_region_id", regionId, meshId);
 
-    public void ClearByRegion(Terrain3DRegion region, int meshId) => Call("clear_by_region", (Resource)region, meshId);
+    public void ClearByOffset(Vector2I regionOffset, int meshId) => Call("clear_by_offset", regionOffset, meshId);
 
     public void AddInstances(Vector3 globalPosition, Godot.Collections.Dictionary @params) => Call("add_instances", globalPosition, @params);
 
     public void RemoveInstances(Vector3 globalPosition, Godot.Collections.Dictionary @params) => Call("remove_instances", globalPosition, @params);
 
-    public void AddMultimesh(int meshId, MultiMesh multimesh, Transform3D transform, bool update) => Call("add_multimesh", meshId, multimesh, transform, update);
+    public void AddTransforms(int meshId, Godot.Collections.Array<Transform3D> transforms, Godot.Collections.Array<Color> colors) => Call("add_transforms", meshId, transforms, colors);
 
-    public void AddTransforms(int meshId, Godot.Collections.Array<Transform3D> transforms, Color[] colors, bool update) => Call("add_transforms", meshId, transforms, colors, update);
+    public void AddMultimesh(int meshId, MultiMesh multimesh, Transform3D transform) => Call("add_multimesh", meshId, multimesh, transform);
 
-    public void AppendLocation(Vector2I regionLocation, int meshId, Godot.Collections.Array<Transform3D> transforms, Color[] colors, bool update) => Call("append_location", regionLocation, meshId, transforms, colors, update);
+    public void SetCastShadows(int meshId, int mode) => Call("set_cast_shadows", meshId, mode);
 
-    public void AppendRegion(Terrain3DRegion region, int meshId, Godot.Collections.Array<Transform3D> transforms, Color[] colors, bool update) => Call("append_region", (Resource)region, meshId, transforms, colors, update);
-
-    public void UpdateTransforms(Aabb aabb) => Call("update_transforms", aabb);
-
-    public void ForceUpdateMmis() => Call("force_update_mmis");
-
-    public void SwapIds(int srcId, int destId) => Call("swap_ids", srcId, destId);
-
-    public void DumpData() => Call("dump_data");
-
-    public void DumpMmis() => Call("dump_mmis");
-
-#endregion
-
+    #endregion
 }

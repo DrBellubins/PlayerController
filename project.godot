@@ -28,7 +28,7 @@ project/assembly_name="PhysicsController"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/cs_wrapper_generator_for_gde/plugin.cfg", "res://addons/terrain_3d/plugin.cfg")
+enabled=PackedStringArray("res://addons/terrain_3d/plugin.cfg")
 
 [input]
 

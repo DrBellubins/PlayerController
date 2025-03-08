@@ -33,19 +33,11 @@ public partial class Terrain3DTextureList : Resource
     }
 #region Properties
 
-    public Godot.Collections.Array<unsupported format character> Textures
+    public Godot.Collections.Array<Terrain3DTextureAsset> Textures
     {
-        get => (Godot.Collections.Array<unsupported format character>)Get("textures");
+        get => (Godot.Collections.Array<Terrain3DTextureAsset>)Get("textures");
         set => Set("textures", Variant.From(value));
     }
-
-#endregion
-
-#region Methods
-
-    public void SetTextures(Godot.Collections.Array<Terrain3DTexture> textures) => Call("set_textures", textures);
-
-    public Godot.Collections.Array<Terrain3DTextureAsset> GetTextures() => GDExtensionHelper.Cast<Terrain3DTextureAsset>(Call("get_textures").As<Godot.Collections.Array<Godot.GodotObject>>());
 
 #endregion
 
