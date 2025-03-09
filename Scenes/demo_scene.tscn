@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cqk0ecbdfqoxc" path="res://Scripts/GameProperties.cs" id="1_3tqca"]
 [ext_resource type="PackedScene" uid="uid://geh7augvu5ky" path="res://Prefabs/Player.tscn" id="1_a7hrv"]
-[ext_resource type="Script" uid="uid://bd1mlbimwnng5" path="res://Scripts/DebugTextDraw.cs" id="1_xf8r6"]
+[ext_resource type="Script" uid="uid://bd1mlbimwnng5" path="res://Scripts/Utils/DebugTextDraw.cs" id="1_xf8r6"]
 [ext_resource type="Texture2D" uid="uid://bw55meyfjcods" path="res://Textures/halo_planet.exr" id="3_jpanv"]
 [ext_resource type="PackedScene" uid="uid://cld7qpx1tehom" path="res://Prefabs/Box.tscn" id="3_xntlb"]
 [ext_resource type="Texture2D" uid="uid://b1ytxwc6vwk6i" path="res://Textures/Terrain/Ground037_AlbedoHeight.png" id="7_okl2h"]

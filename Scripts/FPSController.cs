@@ -35,8 +35,6 @@ public partial class FPSController : RigidBody3D
     private bool isCrouched = false;
     private bool isSliding = false;
 
-    private bool isUsingController = false;
-
     public override void _Ready()
     {
         // Get the camera node (assumes camera is a child node)
@@ -60,7 +58,7 @@ public partial class FPSController : RigidBody3D
         // Capture the input from mouse
         if (@event is InputEventMouseMotion mouseMotion)
         {
-            isUsingController = false;
+            Ginput.IsUsingController = false;
             lookInput = mouseMotion.Relative;
         }
         
@@ -72,7 +70,7 @@ public partial class FPSController : RigidBody3D
 
         // Capture the input from a gamepad
         if (@event is InputEventJoypadMotion)
-            isUsingController = true;
+            Ginput.IsUsingController = true;
     }
 
     public override void _Process(double delta)
@@ -84,7 +82,7 @@ public partial class FPSController : RigidBody3D
         Debug.Write($"running: {isRunning}");
         Debug.Write($"crouched: {isCrouched}");
         Debug.Write($"sliding: {isSliding}");
-        Debug.Write($"using controller: {isUsingController}");
+        Debug.Write($"using controller: {Ginput.IsUsingController}");
         Debug.Write($"{direction}");
         Debug.Write($"{moveInput}");
     }
@@ -97,63 +95,60 @@ public partial class FPSController : RigidBody3D
         velocity.Z *= currentFriction;
         LinearVelocity = velocity;
 
-        // Handle body yaw rotation
         HandleBodyRotation();
-
-        // Handle movement
         HandleMovement((float)delta);
-
-        // Handle sliding
         HandleSliding((float)delta);
-
-        // Handle crounching
         HandleCrouching((float)delta);
     }
 
     private void HandleMovement(float delta)
     {
-        // Check if grounded 
         isGrounded = groundRay.IsColliding();
 
-        // Get input direction
-        // TODO: This is binary -1 to 1 no matter the joystick strength
-        moveInput = new Vector2(Input.GetAxis("move_left", "move_right"), Input.GetAxis("move_forward", "move_backward"));
+        moveInput = new Vector2(Ginput.MoveLeftRight(), Ginput.MoveForwardBackward());
 
         direction = (Camera.GlobalTransform.Basis * new Vector3(moveInput.X, 0, moveInput.Y));
 
-        // Ignore camera pitch, normalize
+        // Ignore camera pitch
         direction.Y = 0f;
-        direction = direction.Normalized();
 
-        isRunning = Input.IsActionPressed("run");
+        // Only normalize direction if there's input, but preserve magnitude for force scaling
+        float inputStrength = moveInput.Length();
 
-        // Apply crouch speed modifier when crouching
+        if (inputStrength > 0)
+            direction = direction.Normalized();
+        else
+            direction = Vector3.Zero;
+
+        isRunning = Ginput.RunPressing;
+
         float crouchModifier = isCrouched ? CrouchSpeedMult : 1.0f;
-
-        // Handle running
         float runModifier = (isRunning && !isCrouched) ? RunSpeedMult : 1.0f;
-
-        // Apply movement force
         float control = isGrounded ? 1.0f : AirControl;
 
         if (direction != Vector3.Zero && canWalk)
         {
-            Vector3 force = direction * Speed * runModifier * crouchModifier * control * delta;
+            if (Ginput.IsUsingController)
+                inputStrength = Mathf.Clamp(inputStrength, 0f, 1f);
+            else
+                inputStrength = 1f; // Bypass joy strength
+
+            Vector3 force = direction * inputStrength * Speed * runModifier * crouchModifier * control * delta;
             ApplyCentralForce(force);
         }
 
         // Handle jump
-        if (Input.IsActionJustPressed("jump") && isGrounded)
+        if (Ginput.JumpPressed && isGrounded)
             ApplyCentralImpulse(new Vector3(0f, JumpImpulse, 0f));
     }
 
     private void HandleCrouching(float delta)
     {
         // Toggle crouch state
-        if (Input.IsActionJustPressed("crouch") && isGrounded && !isSliding)
+        if (Ginput.CrouchPressed && isGrounded && !isSliding)
             isCrouched = true;
 
-        if (Input.IsActionJustReleased("crouch"))
+        if (Ginput.CrouchReleased)
             isCrouched = false;
 
         Crouch(false, delta);
@@ -162,7 +157,7 @@ public partial class FPSController : RigidBody3D
     private void HandleSliding(float delta)
     {
         // Toggle sliding state
-        if (isRunning && Input.IsActionJustPressed("crouch") && isGrounded)
+        if (isRunning && Ginput.CrouchPressed && isGrounded)
         {
             isSliding = true;
             canWalk = false;
@@ -170,7 +165,7 @@ public partial class FPSController : RigidBody3D
             LinearVelocity += new Vector3(LinearVelocity.X, 0f, LinearVelocity.Z);
         }
 
-        if (Input.IsActionJustReleased("crouch"))
+        if (Ginput.CrouchReleased)
         {
             isSliding = false;
             canWalk = true;
@@ -208,7 +203,7 @@ public partial class FPSController : RigidBody3D
 
     private void HandleCameraRotation(float delta)
     {
-        if (isUsingController)
+        if (Ginput.IsUsingController)
         {
             var joyX = Input.GetJoyAxis(0, JoyAxis.RightX);
             var joyY = Input.GetJoyAxis(0, JoyAxis.RightY);
@@ -234,10 +229,8 @@ public partial class FPSController : RigidBody3D
         if (lookInput == Vector2.Zero)
             return;
 
-        // Horizontal rotation (yaw)
         horizontalRotation -= lookInput.X * MouseSensitivity;
 
-        // Vertical rotation (pitch)
         verticalRotation -= lookInput.Y * MouseSensitivity;
         verticalRotation = Mathf.Clamp(verticalRotation, -89.0f, 89.0f);
 
@@ -255,7 +248,6 @@ public partial class FPSController : RigidBody3D
         if (lookInput == Vector2.Zero)
             return;
 
-        // Rotate the RigidBody3D for yaw to align with camera
         RotateY(Mathf.DegToRad(-lookInput.X * MouseSensitivity));
     }
 
