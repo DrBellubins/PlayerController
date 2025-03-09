@@ -8,6 +8,7 @@ public static class Utils
 public static class Ginput
 {
     public static bool IsUsingController = false;
+    public static bool IsSteamDeck = false;
 
     public enum GinputAction
     {

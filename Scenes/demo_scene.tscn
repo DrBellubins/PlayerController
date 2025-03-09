@@ -1,8 +1,9 @@
-[gd_scene load_steps=25 format=3 uid="uid://cf1bti215nrhb"]
+[gd_scene load_steps=26 format=3 uid="uid://cf1bti215nrhb"]
 
 [ext_resource type="Script" uid="uid://cqk0ecbdfqoxc" path="res://Scripts/GameProperties.cs" id="1_3tqca"]
 [ext_resource type="PackedScene" uid="uid://geh7augvu5ky" path="res://Prefabs/Player.tscn" id="1_a7hrv"]
 [ext_resource type="Script" uid="uid://bd1mlbimwnng5" path="res://Scripts/Utils/DebugTextDraw.cs" id="1_xf8r6"]
+[ext_resource type="Script" uid="uid://bg3y8c4kitl5o" path="res://Scripts/StartupScript.cs" id="2_3tqca"]
 [ext_resource type="Texture2D" uid="uid://bw55meyfjcods" path="res://Textures/halo_planet.exr" id="3_jpanv"]
 [ext_resource type="PackedScene" uid="uid://cld7qpx1tehom" path="res://Prefabs/Box.tscn" id="3_xntlb"]
 [ext_resource type="Texture2D" uid="uid://b1ytxwc6vwk6i" path="res://Textures/Terrain/Ground037_AlbedoHeight.png" id="7_okl2h"]
@@ -45,10 +46,9 @@ glow_blend_mode = 1
 glow_hdr_scale = 4.0
 glow_map_strength = 0.0
 fog_enabled = true
-fog_mode = 1
 fog_light_color = Color(0.996078, 0.572549, 0.576471, 1)
 fog_sun_scatter = 0.3
-fog_density = 1.0
+fog_density = 0.005
 fog_aerial_perspective = 1.0
 fog_depth_begin = 0.0
 fog_depth_end = 900.0
@@ -84,17 +84,24 @@ _shader_parameters = {
 &"auto_height_reduction": 0.1,
 &"auto_overlay_texture": 0,
 &"auto_slope": 1.099,
+&"bias_distance": 512.0,
 &"blend_sharpness": 0.355,
+&"depth_blur": 0.0,
+&"enable_macro_variation": true,
+&"enable_projection": true,
 &"height_blending": true,
 &"macro_variation1": Color(0.762025, 0.70781, 0.586211, 1),
 &"macro_variation2": Color(0.915442, 0.807183, 0.735243, 1),
+&"macro_variation_slope": 0.333,
+&"mipmap_bias": 1.0,
 &"noise1_angle": 0.0,
 &"noise1_offset": Vector2(0.5, 0.5),
 &"noise1_scale": 0.04,
 &"noise2_scale": 0.076,
 &"noise3_scale": 0.225,
 &"noise_texture": SubResource("NoiseTexture2D_r4wj5"),
-&"vertex_normals_distance": 128.0
+&"projection_angular_division": 1.436,
+&"projection_threshold": 0.8
 }
 world_background = 0
 auto_shader = true
@@ -110,8 +117,13 @@ distance_fade_min_distance = 85.0
 distance_fade_max_distance = 75.0
 
 [sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_ad2i4"]
-material_override = SubResource("StandardMaterial3D_okl2h")
 generated_type = 1
+height_offset = 0.5
+material_override = SubResource("StandardMaterial3D_okl2h")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+visibility_range = 128.0
 
 [sub_resource type="Terrain3DTextureAsset" id="Terrain3DTextureAsset_8ep1j"]
 name = "Ground037_AlbedoHeight"
@@ -145,6 +157,7 @@ process_priority = -9999
 script = ExtResource("1_3tqca")
 
 [node name="Startup" type="Node" parent="GameProperties"]
+script = ExtResource("2_3tqca")
 
 [node name="UI" type="Control" parent="."]
 layout_mode = 3

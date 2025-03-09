@@ -30,6 +30,7 @@ public partial class FPSController : RigidBody3D
 
     private bool canWalk = true;
 
+    private bool isMoving = false;
     private bool isGrounded = false;
     private bool isRunning = false;
     private bool isCrouched = false;
@@ -37,19 +38,12 @@ public partial class FPSController : RigidBody3D
 
     public override void _Ready()
     {
-        // Get the camera node (assumes camera is a child node)
         Camera = GetNode<Camera3D>("Camera");
-
-        // Get ground check raycast
         groundRay = GetNode<RayCast3D>("GroundRay");
-
-        // Get the player collider
         collider = GetNode<CollisionShape3D>("Collider");
 
-        // Capture the mouse
         Input.MouseMode = Input.MouseModeEnum.Captured;
 
-        // Set current friction to friction setting at start
         currentFriction = Friction;
     }
 
@@ -106,6 +100,7 @@ public partial class FPSController : RigidBody3D
         isGrounded = groundRay.IsColliding();
 
         moveInput = new Vector2(Ginput.MoveLeftRight(), Ginput.MoveForwardBackward());
+        isMoving = moveInput != Vector2.Zero;
 
         direction = (Camera.GlobalTransform.Basis * new Vector3(moveInput.X, 0, moveInput.Y));
 
@@ -120,7 +115,14 @@ public partial class FPSController : RigidBody3D
         else
             direction = Vector3.Zero;
 
-        isRunning = Ginput.RunPressing;
+        // Toggle run on controllers, hold on keyboard
+        if (!Ginput.IsUsingController)
+            isRunning = Ginput.RunPressing;
+        else if (Ginput.RunPressed && isMoving)
+            isRunning = !isRunning;
+        
+        if (!isMoving)
+            isRunning = false;
 
         float crouchModifier = isCrouched ? CrouchSpeedMult : 1.0f;
         float runModifier = (isRunning && !isCrouched) ? RunSpeedMult : 1.0f;
@@ -138,17 +140,22 @@ public partial class FPSController : RigidBody3D
         }
 
         // Handle jump
-        if (Ginput.JumpPressed && isGrounded)
+        if (Ginput.JumpPressed && isGrounded && !isCrouched)
             ApplyCentralImpulse(new Vector3(0f, JumpImpulse, 0f));
     }
 
     private void HandleCrouching(float delta)
     {
-        // Toggle crouch state
+        // Toggle crouch on controllers, hold on keyboard
         if (Ginput.CrouchPressed && isGrounded && !isSliding)
-            isCrouched = true;
+        {
+            if (!Ginput.IsUsingController)
+                isCrouched = true;
+            else
+                isCrouched = !isCrouched;
+        }
 
-        if (Ginput.CrouchReleased)
+        if (Ginput.CrouchReleased && !Ginput.IsUsingController)
             isCrouched = false;
 
         Crouch(false, delta);
