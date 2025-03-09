@@ -47,11 +47,11 @@ glow_map_strength = 0.0
 fog_enabled = true
 fog_mode = 1
 fog_light_color = Color(0.996078, 0.572549, 0.576471, 1)
-fog_sun_scatter = 0.21
-fog_density = 0.398
-fog_sky_affect = 0.0
-fog_depth_begin = 500.0
-fog_depth_end = 3125.8
+fog_sun_scatter = 0.3
+fog_density = 1.0
+fog_aerial_perspective = 1.0
+fog_depth_begin = 0.0
+fog_depth_end = 900.0
 volumetric_fog_ambient_inject = 0.09
 adjustment_enabled = true
 adjustment_brightness = 1.2
@@ -143,6 +143,8 @@ texture_list = Array[Terrain3DTextureAsset]([SubResource("Terrain3DTextureAsset_
 [node name="GameProperties" type="Node" parent="."]
 process_priority = -9999
 script = ExtResource("1_3tqca")
+
+[node name="Startup" type="Node" parent="GameProperties"]
 
 [node name="UI" type="Control" parent="."]
 layout_mode = 3
