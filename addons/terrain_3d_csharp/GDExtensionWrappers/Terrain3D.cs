@@ -249,9 +249,9 @@ public partial class Terrain3D : Node3D
 
     #region Methods
 
-    public void SetPlugin(EditorPlugin plugin) => Call("set_plugin", plugin);
+    /*public void SetPlugin(EditorPlugin plugin) => Call("set_plugin", plugin);
 
-    public EditorPlugin GetPlugin() => Call("get_plugin").As<EditorPlugin>();
+    public EditorPlugin GetPlugin() => Call("get_plugin").As<EditorPlugin>();*/
 
     public void SetCamera(Camera3D camera) => Call("set_camera", camera);
 

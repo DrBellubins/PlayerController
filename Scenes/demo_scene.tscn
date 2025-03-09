@@ -94,16 +94,9 @@ _shader_parameters = {
 &"noise2_scale": 0.076,
 &"noise3_scale": 0.225,
 &"noise_texture": SubResource("NoiseTexture2D_r4wj5"),
-&"vertex_normals_distance": 128.0,
-&"world_noise_height": 64.0,
-&"world_noise_lod_distance": 7500.0,
-&"world_noise_max_octaves": 4,
-&"world_noise_min_octaves": 2,
-&"world_noise_offset": Vector3(0, 0, 0),
-&"world_noise_region_blend": 0.33,
-&"world_noise_scale": 5.0
+&"vertex_normals_distance": 128.0
 }
-world_background = 2
+world_background = 0
 auto_shader = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_okl2h"]
@@ -148,6 +141,7 @@ texture_list = Array[Terrain3DTextureAsset]([SubResource("Terrain3DTextureAsset_
 [node name="DemoScene" type="Node3D"]
 
 [node name="GameProperties" type="Node" parent="."]
+process_priority = -9999
 script = ExtResource("1_3tqca")
 
 [node name="UI" type="Control" parent="."]
@@ -184,7 +178,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Player" parent="." instance=ExtResource("1_a7hrv")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.96846, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30.4952, -32.9487, -17.5884)
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.876826, 0.196464, -0.438838, 0.189996, 0.696847, 0.691596, 0.441676, -0.689787, 0.573686, 0, 0, 0)
@@ -195,11 +189,11 @@ shadow_enabled = true
 environment = SubResource("Environment_wlcnk")
 
 [node name="Box" parent="." instance=ExtResource("3_xntlb")]
-transform = Transform3D(0.829067, 0.55915, 0, -0.333606, 0.494647, -0.802516, -0.448726, 0.665339, 0.596631, 0, 6.08889, 2.05946)
+transform = Transform3D(0.829067, 0.55915, 0, -0.333606, 0.494647, -0.802516, -0.448726, 0.665339, 0.596631, 39.4688, -30.8158, -15.6327)
 collision_layer = 1
 
 [node name="Terrain3D" type="Terrain3D" parent="."]
-data_directory = "res://TerrainData"
+data_directory = "res://Textures/TerrainData"
 material = SubResource("Terrain3DMaterial_r4p77")
 assets = SubResource("Terrain3DAssets_3tqca")
 cast_shadows = 2

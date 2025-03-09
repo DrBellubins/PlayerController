@@ -8,6 +8,7 @@ public partial class FPSController : RigidBody3D
     [Export] public float RunSpeedMult = 1.5f;      // Speed increase when running
     [Export] public float CrouchSpeedMult = 0.5f;   // Speed reduction when crouching
     [Export] public float MouseSensitivity = 0.2f;  // Mouse sensitivity multiplier
+    [Export] public float JoystickSensitivity = 5f; // Joy sensitivity multiplier
     [Export] public float PlayerHeight = 2f;        // How high the player is
     [Export] public float CrouchHeight = 0.5f;      // How low the crouch height is
     [Export] public float AirControl = 0.3f;        // Reduced control in air
@@ -21,7 +22,8 @@ public partial class FPSController : RigidBody3D
     private RayCast3D groundRay;
     private CollisionShape3D collider;
     private Vector3 direction;
-    private Vector2 mouseInput = Vector2.Zero;
+    private Vector2 moveInput = Vector2.Zero;
+    private Vector2 lookInput = Vector2.Zero;
     private float horizontalRotation = 0.0f;
     private float verticalRotation = 0.0f;
     private float currentFriction;
@@ -32,6 +34,8 @@ public partial class FPSController : RigidBody3D
     private bool isRunning = false;
     private bool isCrouched = false;
     private bool isSliding = false;
+
+    private bool isUsingController = false;
 
     public override void _Ready()
     {
@@ -53,29 +57,36 @@ public partial class FPSController : RigidBody3D
 
     public override void _Input(InputEvent @event)
     {
+        // Capture the input from mouse
         if (@event is InputEventMouseMotion mouseMotion)
         {
-            mouseInput = mouseMotion.Relative;
+            isUsingController = false;
+            lookInput = mouseMotion.Relative;
         }
-
-        // Capture the mouse during runtime
+        
         if (@event is InputEventMouseButton mouseButton)
         {
             if (mouseButton.IsPressed() && mouseButton.ButtonIndex == MouseButton.Left)
                 Input.MouseMode = Input.MouseModeEnum.Captured;
         }
+
+        // Capture the input from a gamepad
+        if (@event is InputEventJoypadMotion)
+            isUsingController = true;
     }
 
     public override void _Process(double delta)
     {
         // Handle camera rotation
-        HandleCameraRotation();
+        HandleCameraRotation((float)delta);
 
         Debug.Write($"grounded: {isGrounded}");
         Debug.Write($"running: {isRunning}");
         Debug.Write($"crouched: {isCrouched}");
         Debug.Write($"sliding: {isSliding}");
+        Debug.Write($"using controller: {isUsingController}");
         Debug.Write($"{direction}");
+        Debug.Write($"{moveInput}");
     }
 
     public override void _PhysicsProcess(double delta)
@@ -105,10 +116,12 @@ public partial class FPSController : RigidBody3D
         isGrounded = groundRay.IsColliding();
 
         // Get input direction
-        Vector2 inputDir = Input.GetVector("move_left", "move_right", "move_forward", "move_backward");
-        direction = (Camera.GlobalTransform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
+        // TODO: This is binary -1 to 1 no matter the joystick strength
+        moveInput = new Vector2(Input.GetAxis("move_left", "move_right"), Input.GetAxis("move_forward", "move_backward"));
 
-        // Ignore camera pitch
+        direction = (Camera.GlobalTransform.Basis * new Vector3(moveInput.X, 0, moveInput.Y));
+
+        // Ignore camera pitch, normalize
         direction.Y = 0f;
         direction = direction.Normalized();
 
@@ -187,22 +200,45 @@ public partial class FPSController : RigidBody3D
             Position -= targetPosition;
 
         // Adjust camera position
-        float cameraTargetY = check ? CrouchHeight : PlayerHeight;
+        float cameraTargetY = check ? (CrouchHeight / 2f) : (PlayerHeight / 2f); // Hack cause camera height is not same as crouch height
         Vector3 cameraPos = Camera.Position;
         cameraPos.Y = Mathf.Lerp(cameraPos.Y, cameraTargetY, 10f * delta);
         Camera.Position = cameraPos;
     }
 
-    private void HandleCameraRotation()
+    private void HandleCameraRotation(float delta)
     {
-        if (mouseInput == Vector2.Zero)
+        if (isUsingController)
+        {
+            var joyX = Input.GetJoyAxis(0, JoyAxis.RightX);
+            var joyY = Input.GetJoyAxis(0, JoyAxis.RightY);
+
+            // TODO: The delta multiplier could be dependant on average framerate...
+            lookInput = new Vector2(joyX * JoystickSensitivity * (delta * 100f),
+                joyY * JoystickSensitivity * (delta * 100f));
+            
+            // TODO: This probably shouldn't be hardcoded.
+            float deadzone = 0.1f;
+
+            // Setup deadzones 
+            if (joyX < deadzone && joyX > -deadzone)
+                lookInput.X = 0f;
+
+            if (joyY < deadzone && joyY > -deadzone)
+                lookInput.Y = 0f;
+
+            Debug.Write($"look: {lookInput}");
+            Debug.Write($"joystick: ({joyX}, {joyY})");
+        }
+
+        if (lookInput == Vector2.Zero)
             return;
 
         // Horizontal rotation (yaw)
-        horizontalRotation -= mouseInput.X * MouseSensitivity;
+        horizontalRotation -= lookInput.X * MouseSensitivity;
 
         // Vertical rotation (pitch)
-        verticalRotation -= mouseInput.Y * MouseSensitivity;
+        verticalRotation -= lookInput.Y * MouseSensitivity;
         verticalRotation = Mathf.Clamp(verticalRotation, -89.0f, 89.0f);
 
         Camera.RotationDegrees = new Vector3(
@@ -211,16 +247,16 @@ public partial class FPSController : RigidBody3D
             0
         );
 
-        mouseInput = Vector2.Zero;
+        lookInput = Vector2.Zero;
     }
 
     private void HandleBodyRotation()
     {
-        if (mouseInput == Vector2.Zero)
+        if (lookInput == Vector2.Zero)
             return;
 
         // Rotate the RigidBody3D for yaw to align with camera
-        RotateY(Mathf.DegToRad(-mouseInput.X * MouseSensitivity));
+        RotateY(Mathf.DegToRad(-lookInput.X * MouseSensitivity));
     }
 
     public override void _UnhandledInput(InputEvent @event)
