@@ -11,7 +11,7 @@ public partial class StartupScript : Node
         {
             GetWindow().Size = new Vector2I(1280, 800);
             GetWindow().Borderless = true;
-            Engine.MaxFps = 60; // For stable framerate, optimizations could be made to up this
+            //Engine.MaxFps = 60; // For stable framerate, optimizations could be made to up this
             Ginput.IsSteamDeck = true;
         }
     }
